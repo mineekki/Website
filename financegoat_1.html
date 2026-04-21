@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinanceGoat — Economics for Everyone</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080c08; --bg2:#0e130e; --bg3:#141a14;
+  --green:#22c55e; --green2:#16a34a; --green3:#4ade80;
+  --green-dim:rgba(34,197,94,0.1); --green-border:rgba(34,197,94,0.22);
+  --white:#eef2ee; --muted:rgba(238,242,238,0.42);
+  --card:rgba(255,255,255,0.03); --card-b:rgba(255,255,255,0.07);
+  --font-d:'Bebas Neue',sans-serif; --font-b:'DM Sans',sans-serif;
+  --r:16px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-x:hidden;cursor:default;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--green2);border-radius:2px;}
+
+/* ── MOUSE GLOW CURSOR ─────────────────────────── */
+#cursor-glow{
+  position:fixed;pointer-events:none;z-index:9999;
+  width:480px;height:480px;
+  background:radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 65%);
+  transform:translate(-50%,-50%);
+  transition:opacity 0.3s;
+  border-radius:50%;
+}
+
+/* ── DOT CANVAS ────────────────────────────────── */
+#dotCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.55;}
+
+/* ── NAV ───────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:62px;padding:0 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,12,8,0.8);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--font-d);font-size:24px;letter-spacing:1.5px;
+  text-decoration:none;color:var(--white);
+}
+.nav-logo .g{color:var(--green);}
+.logo-icon{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#16a34a,#22c55e);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;box-shadow:0 0 12px rgba(34,197,94,0.3);
+}
+.nav-links{display:flex;gap:8px;align-items:center;}
+.nav-link{
+  padding:7px 18px;border-radius:100px;
+  font-size:13px;font-weight:500;letter-spacing:0.3px;
+  color:var(--muted);text-decoration:none;
+  transition:all 0.2s;border:1px solid transparent;
+}
+.nav-link:hover{color:var(--white);border-color:var(--card-b);}
+.nav-link.cta{
+  background:var(--green);color:#060a06;
+  border-color:var(--green);font-weight:600;
+  box-shadow:0 0 20px rgba(34,197,94,0.25);
+}
+.nav-link.cta:hover{background:var(--green3);box-shadow:0 0 28px rgba(34,197,94,0.4);}
+
+/* ── PAGES ─────────────────────────────────────── */
+.page{display:none;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ── HERO ──────────────────────────────────────── */
+#page-home{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 48px 80px;}
+.hero-inner{max-width:960px;margin:0 auto;width:100%;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 18px;border-radius:100px;
+  background:var(--green-dim);border:1px solid var(--green-border);
+  font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;
+  color:var(--green);margin-bottom:32px;
+  animation:fadeUp 0.7s ease both;
+}
+.pulse-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  animation:pulse 2.2s ease infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.6);}}
+.hero-title{
+  font-family:var(--font-d);
+  font-size:clamp(72px,11vw,148px);
+  line-height:0.86;letter-spacing:2px;
+  animation:fadeUp 0.7s 0.08s ease both;
+  margin-bottom:32px;
+}
+.hero-title .g{color:var(--green);}
+.hero-title .g2{
+  background:linear-gradient(90deg,var(--green),var(--green3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(16px,2vw,20px);font-weight:300;
+  color:var(--muted);max-width:580px;line-height:1.75;
+  margin-bottom:52px;
+  animation:fadeUp 0.7s 0.16s ease both;
+}
+.hero-cta{
+  display:flex;gap:14px;flex-wrap:wrap;
+  animation:fadeUp 0.7s 0.24s ease both;
+}
+.btn-p{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--green);color:#060a06;
+  font-family:var(--font-b);font-weight:600;font-size:15px;
+  padding:14px 30px;border-radius:100px;border:none;cursor:pointer;
+  text-decoration:none;
+  box-shadow:0 0 24px rgba(34,197,94,0.3);
+  transition:all 0.25s;
+}
+.btn-p:hover{transform:translateY(-3px);box-shadow:0 6px 32px rgba(34,197,94,0.45);background:var(--green3);}
+.btn-g{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--white);
+  font-family:var(--font-b);font-weight:500;font-size:15px;
+  padding:14px 30px;border-radius:100px;cursor:pointer;
+  text-decoration:none;border:1px solid rgba(255,255,255,0.12);
+  transition:all 0.25s;
+}
+.btn-g:hover{border-color:var(--green-border);color:var(--green);transform:translateY(-3px);}
+.hero-stats{
+  display:flex;gap:56px;margin-top:80px;
+  animation:fadeUp 0.7s 0.32s ease both;
+}
+.stat-n{font-family:var(--font-d);font-size:56px;color:var(--green);line-height:1;}
+.stat-l{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+
+/* ── MISSION SECTION (on home page) ─────────────── */
+.mission{
+  padding:120px 48px;
+  max-width:1100px;margin:0 auto;
+}
+.section-eye{
+  font-size:11px;font-weight:600;letter-spacing:5px;
+  text-transform:uppercase;color:var(--green);margin-bottom:18px;
+}
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+.mission-h{
+  font-family:var(--font-d);
+  font-size:clamp(52px,6vw,84px);
+  line-height:0.88;letter-spacing:1px;margin-bottom:28px;
+}
+.mission-h .g{color:var(--green);}
+.mission-p{font-size:16px;font-weight:300;color:var(--muted);line-height:1.85;margin-bottom:18px;}
+.m-cards{display:flex;flex-direction:column;gap:14px;}
+.m-card{
+  background:var(--card);border:1px solid var(--card-b);
+  border-radius:var(--r);padding:22px 24px;
+  display:flex;gap:18px;align-items:flex-start;
+  transition:all 0.3s;position:relative;overflow:hidden;
+}
+.m-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(34,197,94,0.05),transparent 60%);
+  opacity:0;transition:opacity 0.3s;
+}
+.m-card:hover{border-color:var(--green-border);transform:translateX(6px);}
+.m-card:hover::before{opacity:1;}
+.m-card-ico{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:var(--green-dim);border:1px solid var(--green-border);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.m-card-t{font-weight:600;font-size:14px;margin-bottom:4px;}
+.m-card-s{font-size:13px;color:var(--muted);font-weight:300;line-height:1.6;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+
+/* ─────────────────────────────────────────────────
+   30 DAYS PAGE
+───────────────────────────────────────────────── */
+#page-thirty{
+  min-height:100vh;padding-top:80px;
+}
+.thirty-header{
+  text-align:center;padding:60px 48px 48px;
+  position:relative;
+}
+.thirty-title{
+  font-family:var(--font-d);
+  font-size:clamp(56px,9vw,120px);
+  line-height:0.88;letter-spacing:2px;margin-bottom:16px;
+}
+.thirty-title .g{
+  background:linear-gradient(90deg,var(--green),var(--green3),var(--green));
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+.thirty-sub{font-size:17px;color:var(--muted);font-weight:300;max-width:500px;margin:0 auto 8px;}
+
+/* ── GRID OF 30 CARDS ─────────────────────────── */
+.grid-wrap{
+  padding:0 48px 80px;
+  max-width:1240px;margin:0 auto;
+  position:relative;
+}
+
+/* default: 6 cols on wide, scales down */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:12px;
+  position:relative;
+}
+
+.day-box{
+  aspect-ratio:1;
+  background:var(--card);
+  border:1px solid var(--card-b);
+  border-radius:14px;
+  padding:14px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+/* Mouse-following colour gradient on each card */
+.day-box::before{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(34,197,94,0.18),transparent 65%);
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.day-box:hover::before,.day-box:hover{opacity:1;}
+.day-box:hover{
+  border-color:rgba(34,197,94,0.45);
+  transform:translateY(-4px) scale(1.04);
+  box-shadow:0 8px 32px rgba(34,197,94,0.18),0 0 0 1px rgba(34,197,94,0.2);
+  z-index:2;
+}
+.day-box.locked{opacity:0.28;cursor:default;pointer-events:none;}
+.day-box.locked:hover{transform:none;}
+.day-box.expanded{
+  grid-column:span 6;
+  aspect-ratio:unset;
+  border-color:var(--green);
+  background:var(--bg3);
+  cursor:default;
+  transform:none;
+  box-shadow:0 0 0 1px var(--green),0 20px 60px rgba(34,197,94,0.12);
+}
+.day-box.expanded::before{opacity:0;}
+
+.dbox-num{
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  color:var(--green);text-transform:uppercase;
+}
+.dbox-title{
+  font-family:var(--font-d);
+  font-size:clamp(13px,1.4vw,17px);
+  letter-spacing:0.5px;line-height:1.1;
+  color:var(--white);
+}
+.dbox-cat{
+  font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ── EXPANDED LESSON CONTENT ──────────────────── */
+.lesson-body{
+  display:none;padding:36px;
+  animation:fadeIn 0.4s ease;
+}
+.day-box.expanded .lesson-body{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.lesson-top{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:28px;gap:20px;flex-wrap:wrap;
+}
+.lesson-top-left .lesson-day-label{
+  font-size:11px;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;color:var(--green);margin-bottom:8px;
+}
+.lesson-top-left .lesson-title{
+  font-family:var(--font-d);
+  font-size:clamp(36px,5vw,68px);
+  line-height:0.88;letter-spacing:1px;
+}
+.lesson-top-left .lesson-title .g{color:var(--green);}
+.lesson-close-btn{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:var(--card);border:1px solid var(--card-b);
+  color:var(--muted);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;margin-top:4px;
+}
+.lesson-close-btn:hover{border-color:var(--green-border);color:var(--white);}
+
+/* Step tabs */
+.step-tabs{
+  display:flex;gap:4px;flex-wrap:wrap;
+  margin-bottom:32px;
+  padding-bottom:20px;border-bottom:1px solid var(--card-b);
+}
+.step-tab{
+  padding:8px 18px;border-radius:100px;
+  font-size:13px;font-weight:500;
+  color:var(--muted);background:transparent;
+  border:1px solid transparent;cursor:pointer;
+  font-family:var(--font-b);transition:all 0.2s;
+}
+.step-tab:hover{color:var(--white);border-color:var(--card-b);}
+.step-tab.on{
+  background:var(--green-dim);color:var(--green);
+  border-color:var(--green-border);
+}
+
+/* Step content area */
+.step-area .step-p{display:none;}
+.step-area .step-p.on{display:block;animation:fadeIn 0.3s ease;}
+
+/* ── SHARED CONTENT WIDGETS ──────────────────── */
+.w2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
+@media(max-width:640px){.w2{grid-template-columns:1fr;}}
+.wcard{
+  background:rgba(0,0,0,0.3);border:1px solid var(--card-b);
+  border-radius:14px;padding:24px;
+}
+.wcard-lbl{
+  font-size:10px;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;color:var(--green);margin-bottom:10px;
+}
+.wcard-big{
+  font-family:var(--font-d);font-size:52px;color:var(--white);line-height:1;
+}
+.wcard-big.g{color:var(--green);}
+.wcard-sub{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.step-h{
+  font-family:var(--font-d);font-size:clamp(28px,3.5vw,48px);
+  letter-spacing:1px;line-height:0.92;margin-bottom:16px;
+}
+.step-h .g{color:var(--green);}
+.step-eye{
+  font-size:11px;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;color:var(--green);margin-bottom:10px;
+}
+.step-bd{
+  font-size:16px;font-weight:300;color:var(--muted);
+  line-height:1.85;max-width:740px;margin-bottom:22px;
+}
+
+/* Slider */
+.s-wrap{margin-bottom:28px;}
+.s-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.s-lbl{font-size:14px;font-weight:500;}
+.s-val{font-family:var(--font-d);font-size:28px;color:var(--green);}
+input[type=range]{
+  width:100%;-webkit-appearance:none;appearance:none;
+  height:4px;border-radius:2px;background:var(--card-b);outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--green);border:2px solid var(--bg);
+  box-shadow:0 0 10px rgba(34,197,94,0.5);transition:transform 0.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3);}
+.range-sub{
+  display:flex;justify-content:space-between;
+  font-size:11px;color:var(--muted);margin-top:5px;
+}
+
+/* Bar chart */
+.bar-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.bar-item{display:flex;flex-direction:column;gap:4px;}
+.bar-meta{display:flex;justify-content:space-between;font-size:13px;}
+.bar-n{color:var(--muted);}
+.bar-v{font-weight:600;}
+.bar-t{height:6px;border-radius:3px;background:var(--card-b);overflow:hidden;}
+.bar-f{height:100%;border-radius:3px;background:var(--green);transition:width 1s cubic-bezier(0.16,1,0.3,1);}
+
+/* Lorenz SVG */
+.lorenz-box{
+  background:rgba(0,0,0,0.3);border:1px solid var(--card-b);
+  border-radius:14px;padding:24px;margin-bottom:28px;
+}
+.lorenz-lbl{
+  font-size:10px;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:16px;
+}
+
+/* Calc */
+.calc-g{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+@media(max-width:560px){.calc-g{grid-template-columns:1fr;}}
+.calc-f label{
+  display:block;font-size:11px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:7px;
+}
+.calc-f input,.calc-f select{
+  width:100%;background:rgba(0,0,0,0.35);
+  border:1px solid var(--card-b);border-radius:10px;
+  color:var(--white);font-family:var(--font-b);font-size:15px;
+  padding:11px 15px;outline:none;transition:border-color 0.2s;
+}
+.calc-f input:focus,.calc-f select:focus{border-color:var(--green-border);}
+.calc-result{
+  background:var(--green-dim);border:1px solid var(--green-border);
+  border-radius:14px;padding:22px 26px;
+  display:flex;align-items:center;gap:18px;
+}
+.c-res-n{font-family:var(--font-d);font-size:52px;color:var(--green);line-height:1;}
+.c-res-t{font-size:14px;color:var(--muted);line-height:1.65;}
+
+/* OC output */
+.oc-out{
+  background:var(--card);border:1px solid var(--green-border);
+  border-radius:14px;padding:24px;margin-top:20px;
+}
+.oc-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--card-b);
+}
+.oc-row:last-of-type{border:none;font-weight:700;}
+.oc-rl{font-size:14px;color:var(--muted);}
+.oc-rv{font-family:var(--font-d);font-size:28px;}
+.oc-row.tot .oc-rv{color:var(--green);font-size:36px;}
+.oc-be{
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--card-b);
+  font-size:14px;color:var(--muted);line-height:1.7;
+}
+
+/* Quiz */
+.q-opts{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
+.q-opt{
+  background:var(--card);border:1px solid var(--card-b);
+  border-radius:12px;padding:15px 18px;cursor:pointer;
+  font-size:14px;display:flex;gap:12px;align-items:center;
+  transition:all 0.2s;
+}
+.q-opt:hover{border-color:var(--green-border);background:var(--green-dim);}
+.q-opt.correct{border-color:var(--green);background:rgba(34,197,94,0.1);color:var(--green);}
+.q-opt.wrong{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.07);color:rgba(239,68,68,0.8);}
+.q-opt.dis{pointer-events:none;}
+.q-letter{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  background:var(--card-b);display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;
+}
+.q-fb{
+  padding:14px 18px;border-radius:12px;font-size:14px;
+  font-weight:500;display:none;margin-top:4px;
+}
+.q-fb.show{display:block;}
+.q-fb.ok{background:rgba(34,197,94,0.08);color:var(--green);border:1px solid var(--green-border);}
+.q-fb.no{background:rgba(239,68,68,0.06);color:rgba(239,68,68,0.8);border:1px solid rgba(239,68,68,0.25);}
+
+/* Source */
+.src{
+  background:var(--card);border:1px solid var(--card-b);
+  border-radius:12px;padding:14px 18px;
+  font-size:12px;color:var(--muted);
+  display:flex;gap:10px;align-items:flex-start;margin-top:28px;
+}
+.src-i{color:var(--green);flex-shrink:0;}
+
+/* Interpretation grid */
+.interp-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin-bottom:24px;
+}
+@media(max-width:600px){.interp-grid{grid-template-columns:1fr 1fr;}}
+.interp-item{
+  background:var(--card);border:1px solid var(--card-b);
+  border-radius:12px;padding:16px;text-align:center;
+}
+.interp-val{font-family:var(--font-d);font-size:26px;margin-bottom:4px;}
+.interp-n{font-size:12px;color:var(--muted);}
+
+/* Responsive */
+@media(max-width:900px){
+  .cards-grid{grid-template-columns:repeat(5,1fr);}
+  .day-box.expanded{grid-column:span 5;}
+}
+@media(max-width:700px){
+  .cards-grid{grid-template-columns:repeat(4,1fr);}
+  .day-box.expanded{grid-column:span 4;}
+  nav{padding:0 20px;}
+  #page-home,#page-thirty{padding-top:80px;}
+  .mission{padding:80px 20px;}
+  .mission-grid{grid-template-columns:1fr;gap:40px;}
+  .grid-wrap{padding:0 20px 60px;}
+  .thirty-header{padding:60px 20px 36px;}
+  .lesson-body{padding:22px 18px;}
+}
+@media(max-width:500px){
+  .cards-grid{grid-template-columns:repeat(3,1fr);}
+  .day-box.expanded{grid-column:span 3;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="dotCanvas"></canvas>
+<div id="cursor-glow"></div>
+
+<nav>
+  <a href="#" class="nav-logo" onclick="showPage('home');return false;">
+    <div class="logo-icon">🐐</div>
+    FINANCE<span class="g">GOAT</span>
+  </a>
+  <div class="nav-links">
+    <a href="#" class="nav-link" onclick="showPage('home');return false;">Home</a>
+    <a href="#" class="nav-link" onclick="showPage('home');scrollTo('#mission');return false;">Mission</a>
+    <a href="#" class="nav-link cta" onclick="showPage('thirty');return false;">30 Days →</a>
+  </div>
+</nav>
+
+<!-- ══ PAGE: HOME ══ -->
+<div class="page active" id="page-home">
+  <section id="home" style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 48px 80px;">
+    <div class="hero-inner">
+      <div class="hero-badge"><div class="pulse-dot"></div>30 Days · 30 Economic Metrics</div>
+      <h1 class="hero-title">ECONOMICS<br>FOR <span class="g2">EVERYONE.</span></h1>
+      <p class="hero-sub">One economic metric per day. No textbooks, no jargon — just the ideas that shape your money, your country, and the world.</p>
+      <div class="hero-cta">
+        <a href="#" class="btn-p" onclick="showPage('thirty');return false;">Start the 30 Days →</a>
+        <a href="#mission" class="btn-g" onclick="document.querySelector('#mission').scrollIntoView({behavior:'smooth'});return false;">Our Mission</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-n">30</div><div class="stat-l">Days</div></div>
+        <div><div class="stat-n">30</div><div class="stat-l">Metrics</div></div>
+        <div><div class="stat-n">0</div><div class="stat-l">Jargon</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mission" class="mission">
+    <div class="section-eye">Our Mission</div>
+    <div class="mission-grid">
+      <div>
+        <h2 class="mission-h">WHY <span class="g">THIS</span><br>MATTERS.</h2>
+        <p class="mission-p">Economic literacy is one of the most powerful tools you can have — yet schools rarely teach it, and most content makes it inaccessible on purpose.</p>
+        <p class="mission-p">FinanceGoat exists to change that. Every day for 30 days, we break down one concept that actually matters — with live data, interactive tools, and zero fluff.</p>
+        <p class="mission-p">Because understanding Gini, PPP, or Opportunity Cost isn't "school stuff" — it's how you understand your rent, your salary abroad, and how governments really work.</p>
+      </div>
+      <div class="m-cards">
+        <div class="m-card"><div class="m-card-ico">📊</div><div><div class="m-card-t">Real Metrics</div><div class="m-card-s">Every concept backed by actual data and peer-reviewed sources you can verify.</div></div></div>
+        <div class="m-card"><div class="m-card-ico">🎛️</div><div><div class="m-card-t">Interactive Tools</div><div class="m-card-s">Sliders, calculators and live charts — learn by touching the numbers.</div></div></div>
+        <div class="m-card"><div class="m-card-ico">⚡</div><div><div class="m-card-t">One Day at a Time</div><div class="m-card-s">30 days. 30 metrics. Each one builds your economic intuition step by step.</div></div></div>
+        <div class="m-card"><div class="m-card-ico">🌍</div><div><div class="m-card-t">Global Perspective</div><div class="m-card-s">We compare countries, economies and systems so you see how the world actually works.</div></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ PAGE: 30 DAYS ══ -->
+<div class="page" id="page-thirty">
+  <div class="thirty-header">
+    <div class="section-eye">Series · Economics</div>
+    <h2 class="thirty-title">30 DAYS<br><span class="g">30 FACTS.</span></h2>
+    <p class="thirty-sub">Click any card to expand the full interactive lesson.</p>
+  </div>
+  <div class="grid-wrap">
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   DOT CANVAS — mouse-reactive particle field
+══════════════════════════════════════════════ */
+const canvas = document.getElementById('dotCanvas');
+const ctx = canvas.getContext('2d');
+let mouse = {x:window.innerWidth/2,y:window.innerHeight/2};
+let dots = [];
+const DOT_SPACING = 38;
+
+function initDots(){
+  dots=[];
+  const cols = Math.ceil(canvas.width/DOT_SPACING)+1;
+  const rows = Math.ceil(canvas.height/DOT_SPACING)+1;
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      dots.push({
+        ox:c*DOT_SPACING, oy:r*DOT_SPACING,
+        x:c*DOT_SPACING, y:r*DOT_SPACING
+      });
+    }
+  }
+}
+
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  initDots();
+}
+resize();
+window.addEventListener('resize',resize);
+
+document.addEventListener('mousemove',e=>{
+  mouse.x=e.clientX; mouse.y=e.clientY;
+  // Move cursor glow
+  const g=document.getElementById('cursor-glow');
+  g.style.left=e.clientX+'px'; g.style.top=e.clientY+'px';
+});
+
+// Card mouse gradient
+document.addEventListener('mousemove',e=>{
+  document.querySelectorAll('.day-box:not(.expanded):not(.locked)').forEach(card=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width*100).toFixed(1)+'%';
+    const y=((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
+    card.style.setProperty('--mx',x);
+    card.style.setProperty('--my',y);
+  });
+});
+
+let animFrame;
+function animateDots(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='rgba(34,197,94,0.45)';
+  const RADIUS=160, STRENGTH=14;
+  dots.forEach(d=>{
+    const dx=mouse.x-d.ox, dy=mouse.y-d.oy;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<RADIUS){
+      const force=(RADIUS-dist)/RADIUS;
+      d.x=d.ox - dx/dist*force*STRENGTH;
+      d.y=d.oy - dy/dist*force*STRENGTH;
+    } else {
+      d.x+=(d.ox-d.x)*0.08;
+      d.y+=(d.oy-d.y)*0.08;
+    }
+    const distM=Math.sqrt((mouse.x-d.x)**2+(mouse.y-d.y)**2);
+    const alpha=distM<200?0.12+0.35*(1-distM/200):0.09;
+    const size=distM<200?1.1+0.8*(1-distM/200):1.0;
+    ctx.globalAlpha=alpha;
+    ctx.beginPath();
+    ctx.arc(d.x,d.y,size,0,Math.PI*2);
+    ctx.fill();
+  });
+  ctx.globalAlpha=1;
+  animFrame=requestAnimationFrame(animateDots);
+}
+animateDots();
+
+/* ══════════════════════════════════════════════
+   PAGE ROUTING
+══════════════════════════════════════════════ */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='thirty') renderCards();
+}
+
+/* ══════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════ */
+const DAYS = [
+  {id:1,title:'GINI-COEFF.',cat:'Macro',steps:['Hook','Concept','Lorenz','World Data','Quiz'],
+   hook:'One number reveals all of society\'s hidden inequality.'},
+  {id:2,title:'PURCH. POWER PARITY',cat:'Macro',steps:['Hook','Concept','Big Mac','Calculator','Quiz'],
+   hook:'Why $100 means something different in every country.'},
+  {id:3,title:'OPPORTUNITY COST',cat:'Micro',steps:['Hook','Concept','Example','Your Calc','Quiz'],
+   hook:'Every choice hides a price tag you never see on the bill.'},
+];
+for(let i=4;i<=30;i++) DAYS.push({id:i,title:`METRIC ${i}`,cat:'—',steps:[],hook:'Coming soon.',locked:true});
+
+let openDay=null;
+let openStep=0;
+
+/* ══════════════════════════════════════════════
+   RENDER CARDS
+══════════════════════════════════════════════ */
+function renderCards(){
+  const grid=document.getElementById('cardsGrid');
+  grid.innerHTML='';
+  DAYS.forEach(d=>{
+    const box=document.createElement('div');
+    box.className='day-box'+(d.locked?' locked':'')+(openDay===d.id?' expanded':'');
+    box.id='daybox-'+d.id;
+
+    if(openDay===d.id){
+      box.innerHTML=`
+        <div class="lesson-body">
+          <div class="lesson-top">
+            <div class="lesson-top-left">
+              <div class="lesson-day-label">Day ${String(d.id).padStart(2,'0')} · ${d.cat}</div>
+              <div class="lesson-title">${titleHTML(d.title)}</div>
+            </div>
+            <button class="lesson-close-btn" onclick="closeDay()">✕</button>
+          </div>
+          <div class="step-tabs">${d.steps.map((s,i)=>`<button class="step-tab${i===openStep?' on':''}" onclick="goStep(${i})">${s}</button>`).join('')}</div>
+          <div class="step-area">${d.steps.map((_,i)=>`<div class="step-p${i===openStep?' on':''}" id="sp-${d.id}-${i}">${getLessonHTML(d.id,i)}</div>`).join('')}</div>
+        </div>`;
+    } else {
+      box.innerHTML=`
+        <div class="dbox-num">DAY ${String(d.id).padStart(2,'0')}</div>
+        <div class="dbox-title">${d.title}</div>
+        <div class="dbox-cat">${d.cat}</div>`;
+      if(!d.locked) box.onclick=()=>openDayFn(d.id);
+    }
+    grid.appendChild(box);
+  });
+
+  if(openDay!==null){
+    setTimeout(()=>initWidgets(openDay,openStep),100);
+    setTimeout(()=>{
+      const el=document.getElementById('daybox-'+openDay);
+      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
+  }
+}
+
+function titleHTML(t){
+  // Last word gets green
+  const words=t.split(' ');
+  if(words.length===1) return `<span class="g">${t}</span>`;
+  return words.slice(0,-1).join(' ')+' <span class="g">'+words[words.length-1]+'</span>';
+}
+
+function openDayFn(id){
+  openDay=id; openStep=0;
+  renderCards();
+}
+function closeDay(){
+  openDay=null; openStep=0;
+  renderCards();
+}
+function goStep(i){
+  openStep=i;
+  document.querySelectorAll('.step-tab').forEach((t,idx)=>t.classList.toggle('on',idx===i));
+  document.querySelectorAll('.step-p').forEach((p,idx)=>p.classList.toggle('on',idx===i));
+  initWidgets(openDay,i);
+}
+
+/* ══════════════════════════════════════════════
+   LESSON HTML
+══════════════════════════════════════════════ */
+function getLessonHTML(id,s){
+  if(id===1){
+    if(s===0) return `
+      <div class="step-eye">Macroeconomics · Inequality</div>
+      <div class="step-h">THE <span class="g">GINI</span><br>COEFFICIENT</div>
+      <p class="step-bd">How unequal is a society, really? One number — between 0 and 1 — answers that question more precisely than any bar chart or political speech. Corrado Gini devised this measure in 1912. Over a century later, it's still the global standard.</p>
+      <div class="w2">
+        <div class="wcard"><div class="wcard-lbl">Scale</div><div class="wcard-big">0 → 1</div><div class="wcard-sub">0 = perfect equality · 1 = maximum inequality</div></div>
+        <div class="wcard"><div class="wcard-lbl">Germany (income, 2023)</div><div class="wcard-big g">0.31</div><div class="wcard-sub">OECD Income Distribution Database</div></div>
+      </div>
+      <div class="src"><div class="src-i">📚</div><div>Gini, C. (1912). <em>Variabilità e mutabilità</em>. Bologna · World Inequality Database (WID.world) · OECD (2023)</div></div>`;
+
+    if(s===1) return `
+      <div class="step-eye">How It Works</div>
+      <div class="step-h">THE <span class="g">LORENZ</span> CURVE</div>
+      <p class="step-bd">The Gini is derived from the Lorenz Curve — a graph showing what share of total income the bottom X% of a population earns. The Gini coefficient is the ratio of the area between the perfect-equality diagonal and the actual Lorenz Curve.</p>
+      <div class="w2">
+        <div class="wcard"><div class="wcard-lbl">Formula</div><div style="font-family:var(--font-d);font-size:34px;color:var(--green);line-height:1.2;margin-bottom:8px;">G = A ÷ (A+B)</div><div class="wcard-sub">A = area between equality line and curve<br>B = area below curve</div></div>
+        <div class="wcard"><div class="wcard-lbl">Interpretation</div><div style="display:flex;flex-direction:column;gap:8px;font-size:13px;margin-top:4px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted)">≤ 0.30</span><span style="color:#4ade80;">Very equal (Nordics)</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted)">0.30–0.37</span><span style="color:var(--green);">Moderate (DE, FR)</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted)">0.37–0.50</span><span style="color:#facc15;">High (USA, China)</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted)">> 0.50</span><span style="color:#f87171;">Extreme (S.Africa)</span></div>
+        </div></div>
+      </div>`;
+
+    if(s===2) return `
+      <div class="step-eye">Interactive · Draw It</div>
+      <div class="step-h">MOVE THE <span class="g">SLIDER</span></div>
+      <p class="step-bd">Drag the slider to change the Gini value. Watch the Lorenz Curve deform in real time — the green shaded area IS the inequality.</p>
+      <div class="s-wrap">
+        <div class="s-row"><span class="s-lbl">Gini Coefficient</span><span class="s-val" id="gv">0.31</span></div>
+        <input type="range" min="0" max="100" value="31" oninput="updG(this.value)">
+        <div class="range-sub"><span>0 — Perfect equality</span><span>1 — Max inequality</span></div>
+      </div>
+      <div class="lorenz-box">
+        <div class="lorenz-lbl">LORENZ CURVE · Gini = <span id="glbl">0.31</span></div>
+        <svg id="lsvg" viewBox="0 0 400 300" style="width:100%;max-width:480px;display:block;margin:0 auto;">
+          <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e" stop-opacity="0.22"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0.04"/></linearGradient></defs>
+          <line x1="50" y1="260" x2="370" y2="260" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <line x1="50" y1="260" x2="50" y2="20" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <line x1="50" y1="260" x2="370" y2="20" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <path id="larea" fill="url(#lg)"/>
+          <path id="lpath" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="50" y="276" fill="rgba(255,255,255,0.3)" font-size="10" font-family="DM Sans">0%</text>
+          <text x="350" y="276" fill="rgba(255,255,255,0.3)" font-size="10" font-family="DM Sans">100%</text>
+        </svg>
+      </div>
+      <div class="w2">
+        <div class="wcard"><div class="wcard-lbl">Closest Country</div><div id="lcc" style="font-family:var(--font-d);font-size:30px;color:var(--green);">Germany</div><div id="lcd" class="wcard-sub" style="margin-top:4px;">Moderate inequality</div></div>
+        <div class="wcard"><div class="wcard-lbl">What it means</div><div id="lb50" style="font-size:14px;color:var(--muted);line-height:1.7;">The bottom 50% earns ~<strong id="b50" style="color:var(--white);">36%</strong> of total income.</div></div>
+      </div>`;
+
+    if(s===3) return `
+      <div class="step-eye">Live Data · Global</div>
+      <div class="step-h">THE WORLD<br>BY <span class="g">GINI</span></div>
+      <p class="step-bd">Every bar is a country. The difference between Norway and South Africa is 0.367 points. In reality, that's the difference between whether a child born poor can realistically become rich.</p>
+      <div class="bar-list" id="gcb"></div>
+      <div class="src"><div class="src-i">📚</div><div>OECD Income Distribution Database (2023) · World Bank Gini Index · World Inequality Database</div></div>`;
+
+    if(s===4) return `
+      <div class="step-eye">Quiz</div>
+      <div class="step-h">TEST<br><span class="g">YOURSELF</span></div>
+      <p style="font-size:15px;color:var(--muted);margin-bottom:4px;">A country has a Gini of 0.62. What does this tell you?</p>
+      <div class="q-opts" id="qq1">
+        <div class="q-opt" onclick="chk(this,'wrong','qq1','qf1')"><span class="q-letter">A</span>The country has almost perfect income equality</div>
+        <div class="q-opt" onclick="chk(this,'wrong','qq1','qf1')"><span class="q-letter">B</span>62% of the population is below the poverty line</div>
+        <div class="q-opt" onclick="chk(this,'correct','qq1','qf1')"><span class="q-letter">C</span>Income is very unequally distributed — similar to South Africa</div>
+        <div class="q-opt" onclick="chk(this,'wrong','qq1','qf1')"><span class="q-letter">D</span>The top 62% earns all the income</div>
+      </div>
+      <div class="q-fb" id="qf1"></div>
+      <div class="src"><div class="src-i">📚</div><div>Gini, C. (1912) · OECD (2023) · WID.world</div></div>`;
+  }
+
+  if(id===2){
+    if(s===0) return `
+      <div class="step-eye">Macroeconomics · Global Trade</div>
+      <div class="step-h">PURCHASING<br><span class="g">POWER PARITY</span></div>
+      <p class="step-bd">You earn €3,000/month in Germany. Your friend earns the equivalent in India. Are you equally wealthy? Exchange rates say yes. Your grocery bill says no. PPP is how economists measure what money actually buys.</p>
+      <div class="w2">
+        <div class="wcard"><div class="wcard-lbl">Big Mac — Switzerland</div><div class="wcard-big g">$8.17</div><div class="wcard-sub">The Economist Big Mac Index 2024</div></div>
+        <div class="wcard"><div class="wcard-lbl">Big Mac — India</div><div class="wcard-big">$2.54</div><div class="wcard-sub">Same product. 3× price difference.</div></div>
+      </div>
+      <div class="src"><div class="src-i">📚</div><div>IMF World Economic Outlook · The Economist Big Mac Index (2024)</div></div>`;
+
+    if(s===1) return `
+      <div class="step-eye">The Concept</div>
+      <div class="step-h">HOW <span class="g">PPP</span> WORKS</div>
+      <p class="step-bd">PPP compares the cost of an identical basket of goods across countries. If that basket costs €100 in Germany and ₹5,000 in India, the PPP exchange rate is 1€ = 50₹ — regardless of what the currency markets say.</p>
+      <div class="w2">
+        <div class="wcard"><div class="wcard-lbl">Formula</div><div style="font-family:var(--font-d);font-size:28px;color:var(--green);line-height:1.3;margin-bottom:8px;">PPP Rate =<br>Local Price ÷ Foreign Price</div><div class="wcard-sub">Using same basket of goods</div></div>
+        <div class="wcard"><div class="wcard-lbl">Why It Matters</div><div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);margin-top:4px;line-height:1.6;">
+          <div>✅ Fairer GDP comparisons</div><div>✅ Real living-standard measure</div><div>✅ Used by IMF, World Bank, UN</div><div>✅ Explains salary feelings abroad</div>
+        </div></div>
+      </div>`;
+
+    if(s===2) return `
+      <div class="step-eye">Interactive · Big Mac Index</div>
+      <div class="step-h">THE <span class="g">BIG MAC</span> TEST</div>
+      <p class="step-bd">Since a Big Mac is made the same way everywhere, its price reveals how far a dollar stretches locally. Overpriced = strong currency. Underpriced = weak currency relative to USD.</p>
+      <div class="bar-list" id="bmb"></div>
+      <div class="src"><div class="src-i">📚</div><div>The Economist Big Mac Index (July 2024) · IMF WEO (2024)</div></div>`;
+
+    if(s===3) return `
+      <div class="step-eye">Calculator</div>
+      <div class="step-h">YOUR <span class="g">PPP</span><br>CALCULATOR</div>
+      <p class="step-bd">Enter your monthly salary and pick a country. See what your money is really worth in purchasing power terms.</p>
+      <div class="calc-g">
+        <div class="calc-f"><label>Monthly Salary (€)</label><input type="number" id="ps" value="3000" oninput="calcP()"></div>
+        <div class="calc-f"><label>Compare With</label><select id="pc" onchange="calcP()">
+          <option value="1.0">Germany (base)</option>
+          <option value="0.52">India</option>
+          <option value="0.38">Vietnam</option>
+          <option value="1.44">Switzerland</option>
+          <option value="0.78">Poland</option>
+          <option value="0.92">France</option>
+          <option value="1.08">USA</option>
+          <option value="0.65">Brazil</option>
+        </select></div>
+      </div>
+      <div class="calc-result">
+        <div class="c-res-n" id="pn">€5,769</div>
+        <div class="c-res-t" id="pt">Your €3,000 has the purchasing power of <strong>€5,769</strong> there. Your money goes <strong>1.92× further</strong>.</div>
+      </div>`;
+
+    if(s===4) return `
+      <div class="step-eye">Quiz</div>
+      <div class="step-h">TEST<br><span class="g">YOURSELF</span></div>
+      <p style="font-size:15px;color:var(--muted);margin-bottom:4px;">Germany's PPP-adjusted GDP is higher than its nominal GDP. What does this indicate?</p>
+      <div class="q-opts" id="qq2">
+        <div class="q-opt" onclick="chk(this,'wrong','qq2','qf2')"><span class="q-letter">A</span>Germany is printing too much money</div>
+        <div class="q-opt" onclick="chk(this,'correct','qq2','qf2')"><span class="q-letter">B</span>Goods in Germany are cheaper than the global average, so real buying power is higher</div>
+        <div class="q-opt" onclick="chk(this,'wrong','qq2','qf2')"><span class="q-letter">C</span>Germans secretly earn more than official statistics show</div>
+        <div class="q-opt" onclick="chk(this,'wrong','qq2','qf2')"><span class="q-letter">D</span>PPP adjustment is just a rounding error</div>
+      </div>
+      <div class="q-fb" id="qf2"></div>
+      <div class="src"><div class="src-i">📚</div><div>IMF World Economic Outlook · The Economist Big Mac Index (2024)</div></div>`;
+  }
+
+  if(id===3){
+    if(s===0) return `
+      <div class="step-eye">Microeconomics · Decision Theory</div>
+      <div class="step-h">OPPORTUNITY<br><span class="g">COST</span></div>
+      <p class="step-bd">You chose to read this. In doing so, you gave up everything else you could have done right now. That sacrifice has a name — and it's one of the most powerful ideas in all of economics.</p>
+      <div class="w2">
+        <div class="wcard"><div class="wcard-lbl">Definition</div><div style="font-size:16px;color:var(--white);font-weight:300;line-height:1.7;">The value of the <strong style="color:var(--green)">best alternative</strong> you gave up when making a choice.</div></div>
+        <div class="wcard"><div class="wcard-lbl">Formula</div><div style="font-family:var(--font-d);font-size:28px;color:var(--green);line-height:1.25;margin-bottom:8px;">OC = Return of<br>Best Forgone Option</div><div class="wcard-sub">Mankiw, Principles of Economics (2021)</div></div>
+      </div>
+      <div class="src"><div class="src-i">📚</div><div>Mankiw, N.G. (2021). <em>Principles of Economics</em>, 9th ed. Cengage Learning.</div></div>`;
+
+    if(s===1) return `
+      <div class="step-eye">The Concept</div>
+      <div class="step-h">WHY IT <span class="g">MATTERS</span></div>
+      <p class="step-bd">Most people think of cost as money paid. Economists think bigger. The true cost of any choice is everything you <em>didn't</em> get in return.</p>
+      <p class="step-bd">This is why a university degree isn't just tuition — it includes 3–4 years of salary you didn't earn. Why holding cash has a cost. Why watching Netflix isn't free.</p>
+      <div class="w2">
+        <div class="wcard"><div class="wcard-lbl">Examples</div><div style="display:flex;flex-direction:column;gap:9px;font-size:13px;color:var(--muted);line-height:1.6;margin-top:4px;">
+          <div>📚 <strong style="color:var(--white)">Studying</strong> → Forgone salary during those years</div>
+          <div>💵 <strong style="color:var(--white)">Holding cash</strong> → Forgone investment returns (~7%/yr avg)</div>
+          <div>🏠 <strong style="color:var(--white)">Owning a home</strong> → Forgone equity investment returns</div>
+          <div>⏱️ <strong style="color:var(--white)">Your time</strong> → Always has an opportunity cost</div>
+        </div></div>
+        <div class="wcard"><div class="wcard-lbl">Key Insight</div><div style="font-size:15px;color:var(--white);line-height:1.75;font-weight:300;">There is no <strong style="color:var(--green)">"free" choice</strong>. Every decision closes other doors. The economist's job is to see them all.</div></div>
+      </div>`;
+
+    if(s===2) return `
+      <div class="step-eye">Real Example</div>
+      <div class="step-h">THE REAL COST<br>OF A <span class="g">DEGREE</span></div>
+      <p class="step-bd">Most students think a degree costs €12,000/year in tuition. Economists see it differently — and the true number is more than 3× larger.</p>
+      <div class="oc-out">
+        <div class="oc-row"><div class="oc-rl">Tuition (4 years × €12,000)</div><div class="oc-rv">€48,000</div></div>
+        <div class="oc-row"><div class="oc-rl">Forgone salary (4 years × €30,000/yr)</div><div class="oc-rv">€120,000</div></div>
+        <div class="oc-row tot"><div class="oc-rl">True Opportunity Cost</div><div class="oc-rv">€168,000</div></div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:18px;line-height:1.7;">This doesn't mean you shouldn't study. It means a degree must deliver ≥€168,000 in lifetime earnings premium to "break even." Often it does. But now you know the real break-even target.</p>
+      <div class="src"><div class="src-i">📚</div><div>Mankiw, N.G. (2021) · Becker, G. (1964). <em>Human Capital</em>. Columbia University Press.</div></div>`;
+
+    if(s===3) return `
+      <div class="step-eye">Your Calculator</div>
+      <div class="step-h">WHAT'S YOUR <span class="g">OC?</span></div>
+      <p class="step-bd">Plug in your own numbers. See the true opportunity cost of any major life decision.</p>
+      <div class="calc-g">
+        <div class="calc-f"><label>Annual Cost / Tuition (€)</label><input type="number" id="ot" value="12000" oninput="calcO()"></div>
+        <div class="calc-f"><label>Number of Years</label><input type="number" id="oy" value="4" min="1" max="10" oninput="calcO()"></div>
+        <div class="calc-f"><label>Forgone Annual Salary (€)</label><input type="number" id="os" value="30000" oninput="calcO()"></div>
+        <div class="calc-f"><label>Expected Salary After (€/yr)</label><input type="number" id="oa" value="55000" oninput="calcO()"></div>
+      </div>
+      <div class="oc-out" id="ocr">
+        <div class="oc-row"><div class="oc-rl" id="otl">Total Cost</div><div class="oc-rv" id="otv">€48,000</div></div>
+        <div class="oc-row"><div class="oc-rl" id="osl">Forgone Salary</div><div class="oc-rv" id="osv">€120,000</div></div>
+        <div class="oc-row tot"><div class="oc-rl">True Opportunity Cost</div><div class="oc-rv" id="ototv">€168,000</div></div>
+        <div class="oc-be" id="obe"></div>
+      </div>`;
+
+    if(s===4) return `
+      <div class="step-eye">Quiz</div>
+      <div class="step-h">ONE LAST<br><span class="g">QUESTION.</span></div>
+      <p style="font-size:15px;color:var(--muted);margin-bottom:4px;">You leave your €40,000/yr job to start a company. In year 1 you earn €0. What is your opportunity cost?</p>
+      <div class="q-opts" id="qq3">
+        <div class="q-opt" onclick="chk(this,'wrong','qq3','qf3')"><span class="q-letter">A</span>€0, because you chose it voluntarily</div>
+        <div class="q-opt" onclick="chk(this,'wrong','qq3','qf3')"><span class="q-letter">B</span>The cost of registering the company</div>
+        <div class="q-opt" onclick="chk(this,'correct','qq3','qf3')"><span class="q-letter">C</span>€40,000 — the salary you gave up</div>
+        <div class="q-opt" onclick="chk(this,'wrong','qq3','qf3')"><span class="q-letter">D</span>Opportunity cost only applies to education</div>
+      </div>
+      <div class="q-fb" id="qf3"></div>
+      <div class="src"><div class="src-i">📚</div><div>Mankiw, N.G. (2021). <em>Principles of Economics</em>, 9th ed. Cengage Learning.</div></div>`;
+  }
+  return '<p style="color:var(--muted)">Content coming soon.</p>';
+}
+
+/* ══════════════════════════════════════════════
+   WIDGET INITIALIZERS
+══════════════════════════════════════════════ */
+function initWidgets(id,s){
+  if(id===1&&s===2) updG(31);
+  if(id===1&&s===3) renderGCB();
+  if(id===2&&s===2) renderBMB();
+  if(id===2&&s===3) calcP();
+  if(id===3&&s===3) calcO();
+}
+
+// Lorenz
+function updG(v){
+  const g=v/100;
+  const gv=document.getElementById('gv'); if(gv) gv.textContent=g.toFixed(2);
+  const glbl=document.getElementById('glbl'); if(glbl) glbl.textContent=g.toFixed(2);
+  const k=Math.max(1,(1+g)/Math.max(0.01,1-g));
+  const W=320,H=240,ox=50,oy=260;
+  const pts=[];
+  for(let i=0;i<=80;i++){const x=i/80;pts.push({x:ox+x*W,y:oy-Math.pow(x,k)*H});}
+  const d=pts.map((p,i)=>`${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const lp=document.getElementById('lpath'); if(lp) lp.setAttribute('d',d);
+  const la=document.getElementById('larea'); if(la) la.setAttribute('d',d+` L${ox+W},${oy} L${ox},${oy} Z`);
+  const cc=[{n:'Norway',g:0.26},{n:'Germany',g:0.31},{n:'France',g:0.32},{n:'USA',g:0.39},{n:'Brazil',g:0.52},{n:'S.Africa',g:0.63}];
+  const cl=cc.reduce((a,b)=>Math.abs(b.g-g)<Math.abs(a.g-g)?b:a);
+  const lcc=document.getElementById('lcc'); if(lcc) lcc.textContent='≈ '+cl.n;
+  const lcd=document.getElementById('lcd'); if(lcd) lcd.textContent=g<0.30?'High equality':g<0.40?'Moderate inequality':g<0.55?'High inequality':'Extreme inequality';
+  const b50=document.getElementById('b50'); if(b50) b50.textContent=Math.round(Math.pow(0.5,k)*100)+'%';
+}
+
+// Gini countries
+function renderGCB(){
+  const data=[
+    {c:'Norway',g:0.263,col:'#4ade80'},{c:'Denmark',g:0.284,col:'#4ade80'},
+    {c:'Germany',g:0.310,col:'#22c55e'},{c:'France',g:0.319,col:'#22c55e'},
+    {c:'Spain',g:0.343,col:'#86efac'},{c:'UK',g:0.357,col:'#facc15'},
+    {c:'USA',g:0.395,col:'#fb923c'},{c:'China',g:0.382,col:'#fb923c'},
+    {c:'Brazil',g:0.522,col:'#f87171'},{c:'South Africa',g:0.630,col:'#ef4444'},
+  ];
+  const el=document.getElementById('gcb'); if(!el) return;
+  el.innerHTML=data.map(d=>`
+    <div class="bar-item">
+      <div class="bar-meta"><span class="bar-n">${d.c}</span><span class="bar-v">${d.g.toFixed(3)}</span></div>
+      <div class="bar-t"><div class="bar-f" style="width:0%;background:${d.col}" data-w="${(d.g/0.65*100).toFixed(1)}%"></div></div>
+    </div>`).join('');
+  setTimeout(()=>document.querySelectorAll('#gcb .bar-f').forEach(b=>b.style.width=b.dataset.w),80);
+}
+
+// Big Mac bars
+function renderBMB(){
+  const data=[
+    {c:'Switzerland',p:8.17},{c:'Norway',p:7.06},{c:'USA (base)',p:5.69},
+    {c:'Germany',p:5.12},{c:'France',p:5.05},{c:'Poland',p:3.84},
+    {c:'Brazil',p:3.62},{c:'India',p:2.54},{c:'Vietnam',p:2.41},
+  ];
+  const el=document.getElementById('bmb'); if(!el) return;
+  el.innerHTML=data.map(d=>`
+    <div class="bar-item">
+      <div class="bar-meta"><span class="bar-n">${d.c}</span><span class="bar-v">$${d.p.toFixed(2)}</span></div>
+      <div class="bar-t"><div class="bar-f" style="width:0%" data-w="${(d.p/8.5*100).toFixed(1)}%"></div></div>
+    </div>`).join('');
+  setTimeout(()=>document.querySelectorAll('#bmb .bar-f').forEach(b=>b.style.width=b.dataset.w),80);
+}
+
+// PPP calc
+function calcP(){
+  const s=parseFloat(document.getElementById('ps')?.value)||3000;
+  const f=parseFloat(document.getElementById('pc')?.value)||1;
+  const r=s/f; const m=(1/f).toFixed(2);
+  const fmt=v=>'€'+Math.round(v).toLocaleString('de-DE');
+  const dir=f<1?'further':f>1?'less far':'the same';
+  const pn=document.getElementById('pn'); if(pn) pn.textContent=fmt(r);
+  const pt=document.getElementById('pt'); if(pt) pt.innerHTML=`Your ${fmt(s)} has the purchasing power of <strong>${fmt(r)}</strong>. Money goes <strong>${m}× ${dir}</strong> there.`;
+}
+
+// OC calc
+function calcO(){
+  const t=parseFloat(document.getElementById('ot')?.value)||12000;
+  const y=parseFloat(document.getElementById('oy')?.value)||4;
+  const s=parseFloat(document.getElementById('os')?.value)||30000;
+  const a=parseFloat(document.getElementById('oa')?.value)||55000;
+  const tt=t*y, ts=s*y, tot=tt+ts, prem=a-s;
+  const fmt=v=>'€'+Math.round(v).toLocaleString('de-DE');
+  const be=prem>0?Math.ceil(tot/prem):null;
+  const otl=document.getElementById('otl'); if(otl) otl.textContent=`Total Cost (${y} yrs × ${fmt(t)})`;
+  const otv=document.getElementById('otv'); if(otv) otv.textContent=fmt(tt);
+  const osl=document.getElementById('osl'); if(osl) osl.textContent=`Forgone Salary (${y} yrs × ${fmt(s)})`;
+  const osv=document.getElementById('osv'); if(osv) osv.textContent=fmt(ts);
+  const ototv=document.getElementById('ototv'); if(ototv) ototv.textContent=fmt(tot);
+  const obe=document.getElementById('obe'); if(obe) obe.innerHTML=be
+    ?`With a salary premium of ${fmt(prem)}/yr, you break even in <strong style="color:var(--green)">${be} years</strong> after graduation.`
+    :`Expected salary after must exceed the forgone salary to calculate break-even.`;
+}
+
+// Quiz
+function chk(el,res,qid,fbid){
+  document.querySelectorAll(`#${qid} .q-opt`).forEach(o=>o.classList.add('dis'));
+  el.classList.add(res);
+  if(res==='wrong') document.querySelectorAll(`#${qid} .q-opt`).forEach(o=>{if(o.getAttribute('onclick')?.includes("'correct'")) o.classList.add('correct');});
+  const fb=document.getElementById(fbid); if(!fb) return;
+  fb.classList.add('show', res==='correct'?'ok':'no');
+  fb.textContent=res==='correct'?'✅ Correct! You nailed it.':'❌ Not quite — review the previous steps.';
+}
+
+// Init home page on load
+renderCards();
+</script>
+</body>
+</html>
